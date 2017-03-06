@@ -20,14 +20,27 @@ class SupportTicketController(http.Controller):
         """Displays all help groups and thier child help pages"""
         return http.request.render('website_support.support_help_pages', {'help_groups': http.request.env['website.support.help.groups'].sudo().search([])})
         
+
     @http.route('/support/ticket/submit', type="http", auth="public", website=True)
     def support_submit_ticket(self, **kw):
         """Let's public and registered user submit a support ticket"""
         person_name = ""
-        if http.request.env.user.name != "Public user":
+        if http.request.env.user.name == "Public user":
+            return http.request.render('web.login')
+        else:
             person_name = http.request.env.user.name
-            
-        return http.request.render('website_support.support_submit_ticket', {'categories': http.request.env['website.support.ticket.categories'].sudo().search([]), 'person_name': person_name, 'email': http.request.env.user.email})
+            return http.request.render('website_support.support_submit_ticket', {'categories': http.request.env['website.support.ticket.categories'].sudo().search([]), 'person_name': person_name, 'email': http.request.env.user.email})
+
+    @http.route('/support/ticket/submit2', type="http", auth="public", website=True)
+    def support_submit_ticket2(self, **kw):
+        """Let's public and registered user submit a support ticket"""
+        person_name = ""
+        if http.request.env.user.name == "Public user":
+            return http.request.render('web.login')
+        else:
+            person_name = http.request.env.user.name
+            return http.request.render('website_support.support_submit_ticket2', {'categories': http.request.env['website.support.ticket.categories'].sudo().search([]), 'person_name': person_name, 'email': http.request.env.user.email})
+
 
     @http.route('/support/feedback/process/<help_page>', type="http", auth="public", website=True)
     def support_feedback(self, help_page, **kw):
